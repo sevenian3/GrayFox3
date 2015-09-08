@@ -1,0 +1,256 @@
+
+/*
+ * GrayFox
+ * V1.0, June 2014
+ * 
+ * C. Ian Short
+ * Saint Mary's University
+ * Department of Astronomy and Physics
+ * Halifax, NS, Canada
+ *
+ * 1D, static, plane-parallel, LTE, gray stellar atmospheric model
+ * core + wing approximation to Voigt spectral line profile
+ *
+ * Suitable for pedagogical purposes only
+ * 
+ * Logic written in Java SE 8.0
+ * GUI written with JavaFX 8.0
+ *
+ * System requirements: Java run-time environment (JRE)
+ *
+ * Code provided "as is" - there is no formal support 
+ *
+ * Java default license applies:
+ * End users may adapt, modify, develop, debug, and deploy at will
+ * for academic and othe non-profit uses, but are asked to leave this
+ * header text in place (although they may add to the header text).
+ *
+ */
+
+
+.chart {
+    -fx-background-color: #DDDDDD;
+}
+
+.chart-plot-background {
+    -fx-background-color: #DDDDDD;
+}
+
+//.line-chart {
+//    -fx-background-color: #CCCCCC;
+//}
+
+//Plot 1: Temp vs Tau
+//Data:
+#tempTau .default-color0.chart-series-line  {
+        -fx-stroke: #FF0000;
+    }    
+#tempTau .default-color0.chart-line-symbol  {
+        -fx-background-color: #FF0000, white;
+    }
+//Guidelines:    
+#tempTau .default-color1.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#tempTau .default-color1.chart-line-symbol  {
+        -fx-background-color: #000000, white;
+    }
+#tempTau .default-color2.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#tempTau .default-color2.chart-line-symbol  {
+        -fx-background-color: #FFFFFF, white;
+    }
+    
+//Plot 2: Temp vs Depth
+//Data:
+#tempDpth .default-color0.chart-series-line  {
+        -fx-stroke: #FF0000;
+    }    
+#tempDpth .default-color0.chart-line-symbol  {
+        -fx-background-color: #FF0000, white;
+    }
+//Guidelines:    
+#tempDpth .default-color1.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#tempDpth .default-color1.chart-line-symbol  {
+        -fx-background-color: #000000, white;
+    }
+#tempDpth .default-color2.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#tempDpth .default-color2.chart-line-symbol  {
+        -fx-background-color: #FFFFFF, white;
+    }  
+    
+//Plot 3: Press vs Tau
+//Data:
+#pressTau .default-color0.chart-series-line  {
+        -fx-stroke: #FF0000;
+    }    
+#pressTau .default-color0.chart-line-symbol  {
+        -fx-background-color: #FF0000, white;
+    }
+#pressTau .default-color1.chart-series-line  {
+        -fx-stroke: #00FF00;
+    }    
+#pressTau .default-color1.chart-line-symbol  {
+        -fx-background-color: #00FF00, white;
+    }
+#pressTau .default-color2.chart-series-line  {
+        -fx-stroke: #0000FF;
+    }    
+#pressTau .default-color2.chart-line-symbol  {
+        -fx-background-color: #0000FF, white;
+    }
+//Guidelines:    
+#pressTau .default-color3.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#pressTau .default-color3.chart-line-symbol  {
+        -fx-background-color: #000000, white;
+    }
+#pressTau .default-color4.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#pressTau .default-color4.chart-line-symbol  {
+        -fx-background-color: #FFFFFF, white;
+    }    
+    
+//Plot 4 Limb darkening profiles
+//Data:
+#limb .default-color0.chart-series-line  {
+        -fx-stroke: #0000FF;
+    }    
+#limb .default-color0.chart-line-symbol  {
+        -fx-background-color: #0000FF, white;
+    }
+#limb .default-color1.chart-series-line  {
+        -fx-stroke: #00FF00;
+    }    
+#limb .default-color1.chart-line-symbol  {
+        -fx-background-color: #00FF00, white;
+    }
+#limb .default-color2.chart-series-line  {
+        -fx-stroke: #FF0000;
+    }    
+#limb .default-color2.chart-line-symbol  {
+        -fx-background-color: #FF0000, white;
+    }
+#limb .default-color3.chart-series-line  {
+        -fx-stroke: #666666;
+    }    
+#limb .default-color3.chart-line-symbol  {
+        -fx-background-color: #666666, white;
+    }
+    
+//Plot 5 SED + UBVRI bands
+//Data:
+#spec .default-color0.chart-series-line  {
+        -fx-stroke: #000000;
+    }    
+#spec .default-color0.chart-line-symbol  {
+        -fx-background-color: #000000, white;
+    }
+#spec .default-color1.chart-series-line  {
+        -fx-stroke: #333333;
+    }    
+#spec .default-color1.chart-line-symbol  {
+        -fx-background-color: #333333, white;
+    }
+#spec .default-color2.chart-series-line  {
+        -fx-stroke: #666666;
+    }    
+#spec .default-color2.chart-line-symbol  {
+        -fx-background-color: #666666, white;
+    }
+// UBV(RI)_C band centres
+#spec .default-color3.chart-series-line  {
+        -fx-stroke: #FF00FF;
+        -fx-stroke-width: 1px;
+    }    
+#spec .default-color3.chart-line-symbol  {
+        -fx-background-color: #FF00FF, white;
+    }
+#spec .default-color4.chart-series-line  {
+        -fx-stroke: #0000FF;
+        -fx-stroke-width: 1px;
+    }    
+#spec .default-color4.chart-line-symbol  {
+        -fx-background-color: #0000FF, white;
+    }
+#spec .default-color5.chart-series-line  {
+        -fx-stroke: #00FF00;
+        -fx-stroke-width: 1px;
+    }    
+#spec .default-color5.chart-line-symbol  {
+        -fx-background-color: #00FF00, white;
+    }
+#spec .default-color6.chart-series-line  {
+        -fx-stroke: #FF0000;
+        -fx-stroke-width: 1px;
+    }    
+#spec .default-color6.chart-line-symbol  {
+        -fx-background-color: #FF0000, white;
+    }
+#spec .default-color7.chart-series-line  {
+        -fx-stroke: #880000;
+        -fx-stroke-width: 1px;
+    }    
+#spec .default-color7.chart-line-symbol  {
+        -fx-background-color: #880000, white;
+    }
+    
+//Plot 6 SED + UBVRI bands
+//Data:
+#line .default-color0.chart-series-line  {
+        -fx-stroke: #0066FF;
+        -fx-stroke-width: 2px;
+    }    
+#line .default-color0.chart-line-symbol  {
+        -fx-background-color: #0066FF, white;
+    }
+#line .default-color1.chart-series-line  {
+        -fx-stroke: #00AAFF;
+        -fx-stroke-width: 2px;
+    }    
+#line .default-color1.chart-line-symbol  {
+        -fx-background-color: #00AAFF, white;
+    }
+#line .default-color2.chart-series-line  {
+        -fx-stroke: #0000FF;
+    }    
+#line .default-color2.chart-line-symbol  {
+        -fx-background-color: #0000FF, white;
+    }
+// Guidelines
+#line .default-color3.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#line .default-color3.chart-line-symbol  {
+        -fx-background-color: #000000, white;
+    }
+#line .default-color4.chart-series-line  {
+        -fx-stroke: #000000;
+        -fx-stroke-width: 1px;
+    }    
+#line .default-color4.chart-line-symbol  {
+        -fx-background-color: #000000, white;
+    }
+#line .default-color5.chart-series-line  {
+        -fx-stroke: #555555;
+        -fx-stroke-width: 1px;
+    }    
+#line .default-color5.chart-line-symbol  {
+        -fx-background-color: #FFFFFF, white;
+    }   
+
+

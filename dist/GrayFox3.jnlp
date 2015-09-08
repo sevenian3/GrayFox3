@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="GrayFox3.jnlp">
+  <information>
+    <title>GrayFox3</title>
+    <vendor>Ian Short Saint Marys University</vendor>
+    <description>1D static plane-parallel LTE gray stellar atmospheric model
+core plus wing approximation to Voigt spectral line profile
+Suitable for pedagogical purposes only</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <jfx:javafx-runtime version="2.2+" href="http://javadl.sun.com/webapps/download/GetFile/javafx-latest/windows-i586/javafx2.jnlp"/>
+  </resources>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="GrayFox3.jar" size="267776" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="GrayFox3" >
+    <param name="requiredFXVersion" value="2.2+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="grayfox.GrayFox3"  name="GrayFox3" />
+  <update check="always"/>
+</jnlp>
