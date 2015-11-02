@@ -30,7 +30,6 @@
  * header text in place (although they may add to the header text).
  *
  */
-
 package grayfox;
 
 import java.text.DecimalFormat;
@@ -769,7 +768,7 @@ public class GrayFox3 extends Application {
                         NeDfg2[1][i] = logPeDfg2[i] - tempSun[1][i] - Useful.logK();
                         NeDfg2[0][i] = Math.exp(NeDfg2[1][i]);
 
-                        //System.out.format("%12.8f   %12.8f   %12.8f   %12.8f   %12.8f%n", logE * tauRos[1][i], tempSun[0][i], logE * kapDfg2[1][i], logE * pressDfg2[1][i], logE * logPeDfg2[i]);
+                        System.out.format("%12.8f   %12.8f   %12.8f   %12.8f   %12.8f%n", logE * tauRos[1][i], tempSun[0][i], logE * kapDfg2[1][i], logE * pressDfg2[1][i], logE * logPeDfg2[i]);
                     }
 
                     //
@@ -829,13 +828,13 @@ public class GrayFox3 extends Application {
                             numDeps, kappaScale, tauRos, temp, rhoDfg2);
                     logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
                             numDeps, kappaScale, tauRos, temp, rhoDfg2);
-                    System.out.println("logNumsH2 " + logE*logNumsH2[2][36] + " logNumsH3 " + logE*logNumsH3[2][36]);
+                    //System.out.println("logNumsH2 " + logE * logNumsH2[2][36] + " logNumsH3 " + logE * logNumsH3[2][36]);
                     double kappa[][] = Kappas.kappas(mode, numDeps, rhoDfg2, rhoDfg2, kapDfg2, kappaScale, logg, loggSun, teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
                     //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
                     logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
                             numDeps, kappaScale, tauRos, tempSun, rhoDfg2);
                     logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
-                            numDeps, kappaScale, tauRos, tempSun, rhoDfg2);                    
+                            numDeps, kappaScale, tauRos, tempSun, rhoDfg2);
                     double kappaSun[][] = Kappas.kappas(mode, numDeps, rhoDfg2, rhoDfg2, kapDfg2, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun, logNumsH3, logNumsH2);
 
                     //Next solve hydrostatic eq for P scale on the tau scale - need to pick a depth dependent kappa value!
@@ -867,7 +866,7 @@ public class GrayFox3 extends Application {
                     logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
                             numDeps, kappaScale, tauRos, temp, rho);
                     logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
-                            numDeps, kappaScale, tauRos, temp, rho);                    
+                            numDeps, kappaScale, tauRos, temp, rho);
                     kappa = Kappas.kappas(mode, numDeps, rho, rhoSun, kapDfg2, kappaScale, logg, loggSun, teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
                     //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
                     //kappaSun = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun);
@@ -966,6 +965,7 @@ public class GrayFox3 extends Application {
                     int numLines = 14;
                     //int numLines = 1;
                     double[] listLam0 = new double[numLines];  // nm
+                    String[] listElement = new String[numLines]; //element
                     double[] listMass = new double[numLines]; // amu
                     double[] listLogGammaCol = new double[numLines];
                     //abundance in logarithmic A12 sysytem
@@ -1004,6 +1004,7 @@ public class GrayFox3 extends Application {
                     //    
                     //CaII K
                     //listName[0] = "Ca II K";
+                    listElement[0] = "Ca";
                     listLam0[0] = 393.366;
                     listA12[0] = 6.34;
                     listLogf[0] = -0.166;
@@ -1020,6 +1021,7 @@ public class GrayFox3 extends Application {
 
                     //CaII H
                     //listName[1] = "Ca II H";
+                    listElement[1] = "Ca";
                     listLam0[1] = 396.847;
                     listA12[1] = 6.34;
                     listLogf[1] = -0.482;
@@ -1036,6 +1038,7 @@ public class GrayFox3 extends Application {
 
                     //Fe I 4045
                     //listName[2] = "Fe I";
+                    listElement[2] = "Fe";
                     listLam0[2] = 404.581;
                     listA12[2] = 7.50; //??????
                     listLogf[2] = -0.674;
@@ -1051,6 +1054,7 @@ public class GrayFox3 extends Application {
 
                     //Hdelta
                     //listName[3] = "H I &#948";
+                    listElement[3] = "H";
                     listLam0[3] = 410.174;
                     listA12[3] = 12.0;    //By definition - it's Hydrogen
                     listLogf[3] = -1.655;
@@ -1066,6 +1070,7 @@ public class GrayFox3 extends Application {
 
                     //CaI 4227
                     //listName[4] = "Ca I";
+                    listElement[4] = "Ca";
                     listLam0[4] = 422.673;
                     listA12[4] = 6.34;
                     listLogf[4] = 0.243;
@@ -1081,6 +1086,7 @@ public class GrayFox3 extends Application {
 
                     //Fe I 4271
                     //listName[5] = "Fe I";
+                    listElement[5] = "Fe";
                     listLam0[5] = 427.176;
                     listA12[5] = 7.50; //??????
                     listLogf[5] = -1.118;
@@ -1096,6 +1102,7 @@ public class GrayFox3 extends Application {
 
                     //Hgamma
                     //[6] = "H I &#947";
+                    listElement[6] = "H";
                     listLam0[6] = 434.047;
                     listA12[6] = 12.0;    //By definition - it's Hydrogen
                     listLogf[6] = -1.350;
@@ -1111,6 +1118,7 @@ public class GrayFox3 extends Application {
 
                     //He I 4387
                     //listName[7] = "He I";
+                    listElement[7] = "He";
                     listLam0[7] = 438.793;
                     listA12[7] = 10.93; //??????
                     listLogf[7] = -1.364;
@@ -1126,6 +1134,7 @@ public class GrayFox3 extends Application {
 
                     //He I 4471
                     //listName[8] = "He I";
+                    listElement[8] = "He";
                     listLam0[8] = 447.147;
                     listA12[8] = 10.93; //??????
                     listLogf[8] = -0.986;
@@ -1141,6 +1150,7 @@ public class GrayFox3 extends Application {
 
                     //Hbeta
                     //listName[9] = "H I &#946";
+                    listElement[9] = "H";
                     listLam0[9] = 486.128;
                     listA12[9] = 12.0;    //By definition - it's Hydrogen
                     listLogf[9] = -0.914;
@@ -1156,6 +1166,7 @@ public class GrayFox3 extends Application {
 
                     //MgIb1
                     //listName[10] = "Mg I <em>b</em><sub>1</sub>";
+                    listElement[10] = "Mg";
                     listLam0[10] = 518.360;  //nm
                     listA12[10] = 7.60;    // Grevesse & Sauval 98
                     listLogf[10] = -0.867;
@@ -1171,6 +1182,7 @@ public class GrayFox3 extends Application {
 
                     //NaID2
                     //listName[11] = "Na I <em>D</em><sub>2</sub>";
+                    listElement[11] = "Na";
                     listLam0[11] = 588.995;
                     listA12[11] = 6.24;    // Grevesse & Sauval 98
                     listLogf[11] = -0.193;
@@ -1186,6 +1198,7 @@ public class GrayFox3 extends Application {
 
                     //NaID1
                     //listName[12] = "Na I <em>D</em><sub>1</sub>";
+                    listElement[12] = "Na";
                     listLam0[12] = 589.592;  //nm
                     listA12[12] = 6.24;    // Grevesse & Sauval 98    
                     listLogf[12] = -0.495;
@@ -1201,6 +1214,7 @@ public class GrayFox3 extends Application {
 
                     //Halpha
                     //listName[13] = "H I &#945";
+                    listElement[13] = "H";
                     listLam0[13] = 656.282;
                     listA12[13] = 12.0;    //By definition - it's Hydrogen
                     listLogf[13] = -0.193;
@@ -1215,6 +1229,8 @@ public class GrayFox3 extends Application {
                     listIonized[13] = false;
 
                     //Notes
+                    //if Hydrogen or Helium, kappaScale should be unity for these purposes:
+                    double kappaScaleList = 1.0; //initialization                   
                     //
                     //CAUTION: This treatment expects numPoints (number of wavelengths, lambda) to be the same for *all* spectral lines!
                     //CONTINUUM lambda scale (nm)
@@ -1238,7 +1254,7 @@ public class GrayFox3 extends Application {
                     int whichBin = 0;  //initialization
                     for (int iB = 0; iB < numBins; iB++) {
                         if (grayLevelsEpsilons[0][iB] >= lambdaScale[0]) {
-                            System.out.println("grayLevelsEpsilons[0][iB] " + grayLevelsEpsilons[0][iB] + " lambdaScale[0] " + lambdaScale[0]);
+                            //System.out.println("grayLevelsEpsilons[0][iB] " + grayLevelsEpsilons[0][iB] + " lambdaScale[0] " + lambdaScale[0]);
                             whichBin = iB;  //found it!
                             break;
                         }
@@ -1276,6 +1292,13 @@ public class GrayFox3 extends Application {
                     fluxSurfBol = 0;
 
                     for (int iLine = 0; iLine < numLines; iLine++) {
+                        //if H or He, make sure kappaScale is unity:
+                        if ((listElement[iLine] == "H")
+                                || (listElement[iLine] == "He")) {
+                            kappaScaleList = 1.0;
+                        } else {
+                            kappaScaleList = kappaScale;
+                        }
                         //System.out.println("iLine " + iLine + " numNow " + numNow);
                         double listLogN = (listA12[iLine] - 12.0) + logNH;
                         listLam0[iLine] = listLam0[iLine] * 1.0e-7;  // nm to cm
@@ -1290,9 +1313,9 @@ public class GrayFox3 extends Application {
                         //        numDeps, kappaScale, tauRos, temp, rho);
                         double[][] listLogNums = LevelPops.levelPops(listLam0[iLine], listLogN, Ne, listIonized[iLine], listChiI1[iLine],
                                 listChiI2[iLine], listChiL[iLine], listGw1[iLine], listGw2[iLine], listGwL[iLine],
-                                numDeps, kappaScale, tauRos, temp, rho);
+                                numDeps, kappaScaleList, tauRos, temp, rho);
                         double[][] listLogKappaL = LineKappa.lineKap(listLam0[iLine], listLogNums, listLogf[iLine], listLinePoints, listLineProf,
-                                numDeps, kappaScale, tauRos, temp, rhoSun);
+                                numDeps, kappaScaleList, tauRos, temp, rhoSun);
                         //int listNumPoints = listLinePoints[0].length; // + 1;  //Extra wavelength point at end for monochromatic continuum tau scale
                         //double logTauL[][] = LineTau2.tauLambda(numDeps, listNumPoints, logKappaL,
                         //        kappa, tauRos, rho, logg);
