@@ -122,9 +122,10 @@ public class LevelPops {
         // Row 1: ionized stage ground state population
         // Row 2: level population of lower level of bb transition (could be in either stage I or II!) 
         // Row 3: level population of upper level of bb transition (could be in either stage I or II!) 
-        double[][] logNums = new double[4][numDeps];
+        // Row 4: doubly ionized stage ground state population        
+        double[][] logNums = new double[5][numDeps];
 
-        double num, logNum, expFac, logSaha, saha, logIonFracI, logIonFracII, logNumI, logNumII;
+        double num, logNum, expFac, logSaha, saha, logIonFracI, logIonFracII, logIonFracIII, logNumI, logNumII;
         double saha21, logSaha21, saha32, logSaha32;
         logNumI = 0.0;
         logNumII = 0.0;
@@ -168,11 +169,12 @@ public class LevelPops {
 
             logIonFracII = logSaha21 - Math.log(1.0 + saha21 + saha32 * saha21); // log ionization fraction in stage II
             logIonFracI = -1.0 * Math.log(1.0 + saha21 + saha32 * saha21);     // log ionization fraction in stage I
+            logIonFracIII = logSaha32 + logSaha21 - Math.log(1.0 + saha21 + saha32 * saha21); //log ionization fraction in stage III
+
             //if (id == 36) {
             //    System.out.println("logSaha21 " + logE*logSaha21 + " logSaha32 " + logE*logSaha32);
             //    System.out.println("IonFracII " + Math.exp(logIonFracII) + " IonFracI " + Math.exp(logIonFracI) + " logNe " + logE*logNe);
             //}
-
             //System.out.println("LevelPops: id, ionFracI, ionFracII: " + id + " " + Math.exp(logIonFracI) + " " + Math.exp(logIonFracII) );
             if (ionized) {
                 //System.out.println("LevPops: ionized branch taken, ionized =  " + ionized);
@@ -194,6 +196,8 @@ public class LevelPops {
                 logNums[3][id] = logNumI - boltzFacU / temp[0][id] + logGwU; // upper level of b-b transition
 
             }
+
+            logNums[4][id] = logNum + logIonFracIII; // Ascribe entire doubly ionized stage pop to its ground level                 
 
             // System.out.println("LevelPops: id, logNums[0][id], logNums[1][id], logNums[2][id], logNums[3][id]: " + id + " "
             //          + Math.exp(logNums[0][id]) + " "
