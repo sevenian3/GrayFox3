@@ -28,7 +28,7 @@
 package grayfox;
 
 /**
- * linear and logarithmic physcial constant and conversion factors cgs units
+ * linear and logarithmic physical constant and conversion factors cgs units
  */
 public class Useful {
 

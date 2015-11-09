@@ -118,20 +118,20 @@ public class GrayFox3 extends Application {
         );
         loggLbl.setTooltip(loggTip);
 
-        TextField loggIn = new TextField("4.5");
+        TextField loggIn = new TextField("4.4");
         grid.add(loggIn, 1, 3);
 
-        //kappaScale input
-        Label kappaLbl = new Label("Mean opacity (0.1 - 3.0 x solar)");
-        grid.add(kappaLbl, 0, 4);
+        //log kappaScale input
+        Label logKappaLbl = new Label("log_10 Mean opacity wrt solar value (-3.0 - 1.0)");
+        grid.add(logKappaLbl, 0, 4);
         Tooltip kappaTip = new Tooltip();
         kappaTip.setText(
                 "Rosseland mean extinction multiplier - simulates varying metallicity"
         );
-        kappaLbl.setTooltip(kappaTip);
+        logKappaLbl.setTooltip(kappaTip);
 
-        TextField kappaIn = new TextField("1.0");
-        grid.add(kappaIn, 1, 4);
+        TextField logKappaIn = new TextField("0.0");
+        grid.add(logKappaIn, 1, 4);
 
         //massStar input
         Label massStarLbl = new Label("Mass (0.25 - 5.0 x M_Sun)");
@@ -158,7 +158,7 @@ public class GrayFox3 extends Application {
         Label lamLbl = new Label("Wavelength (200 - 2000 nm)");
         grid.add(lamLbl, 2, 2);
 
-        TextField lamIn = new TextField("500.0");
+        TextField lamIn = new TextField("393.4");
         grid.add(lamIn, 3, 2);
 
         // xiT:
@@ -184,7 +184,7 @@ public class GrayFox3 extends Application {
         );
         massLbl.setTooltip(massTip);
 
-        TextField massIn = new TextField("12.0");
+        TextField massIn = new TextField("40.1");
         grid.add(massIn, 3, 4);
 
         // Van der Waals broadening
@@ -197,7 +197,7 @@ public class GrayFox3 extends Application {
         );
         gamLbl.setTooltip(gamTip);
 
-        TextField gamIn = new TextField("0.0");
+        TextField gamIn = new TextField("0.5");
         grid.add(gamIn, 3, 5);
 
         // Abundance log n_l:
@@ -209,7 +209,7 @@ public class GrayFox3 extends Application {
         );
         a12Lbl.setTooltip(a12Tip);
 
-        TextField a12In = new TextField("3.5");
+        TextField a12In = new TextField("6.34");
         grid.add(a12In, 5, 2);
 
         // Oscillator strength -  log f:
@@ -221,14 +221,14 @@ public class GrayFox3 extends Application {
         );
         logfLbl.setTooltip(logfTip);
 
-        TextField logfIn = new TextField("-1.0");
+        TextField logfIn = new TextField("-0.166");
         grid.add(logfIn, 5, 3);
 
         // Ground state ionization E (eV) - Stage I:
         Label ion1Lbl = new Label("Stage I Ground ion. E (ev) (5.0 - 25.0)");
         grid.add(ion1Lbl, 4, 4);
 
-        TextField ion1In = new TextField("8.0");
+        TextField ion1In = new TextField("6.113");
         grid.add(ion1In, 5, 4);
 
         // Lower level excitation E (ev):
@@ -243,14 +243,14 @@ public class GrayFox3 extends Application {
         );
         excLbl.setTooltip(excTip);
 
-        TextField excIn = new TextField("0.0");
+        TextField excIn = new TextField("6.123");
         grid.add(excIn, 5, 5);
 
         //Ground state ionization E (eV) - Stage II: :
         Label ion2Lbl = new Label("Stage II Ground ion. E (ev) (5.0 - 50.0)");
         grid.add(ion2Lbl, 6, 2);
 
-        TextField ion2In = new TextField("8.0");
+        TextField ion2In = new TextField("11.87");
         grid.add(ion2In, 7, 2);
 
         //Ground state statistical weight (or partition fn) - Stage I: :
@@ -274,7 +274,7 @@ public class GrayFox3 extends Application {
                 + " OR partition fn of ion stage I (unitless)"
         );
         gw2Lbl.setTooltip(gw2Tip);
-        TextField gw2In = new TextField("1");
+        TextField gw2In = new TextField("2");
         grid.add(gw2In, 7, 4);
 
         //Lower E-level statistical weight:
@@ -285,7 +285,7 @@ public class GrayFox3 extends Application {
                 "Statistical weight, g, of lower E level of b-b transition"
         );
         gwLLbl.setTooltip(gwLTip);
-        TextField gwLIn = new TextField("1");
+        TextField gwLIn = new TextField("2");
         grid.add(gwLIn, 7, 5);
 
         //
@@ -316,7 +316,7 @@ public class GrayFox3 extends Application {
 
                 String teffStr = teffIn.getText();
                 String loggStr = loggIn.getText();
-                String kappaStr = kappaIn.getText();
+                String logKappaStr = logKappaIn.getText();
                 String massStarStr = massStarIn.getText();
 
                 String lamStr = lamIn.getText();
@@ -337,7 +337,7 @@ public class GrayFox3 extends Application {
                 if (loggStr == null || loggStr.isEmpty()) {
                     teffStr = null;
                 }
-                if (kappaStr == null || kappaStr.isEmpty()) {
+                if (logKappaStr == null || logKappaStr.isEmpty()) {
                     teffStr = null;
                 }
                 if (massStarStr == null || massStarStr.isEmpty()) {
@@ -392,7 +392,7 @@ public class GrayFox3 extends Application {
 
                     //Argument 3: Linear sclae factor for solar Rosseland oapcity distribution
                     // mimics "metallicity" parameter - ??  (unitless)
-                    double kappaScale = (Double.valueOf(kappaStr)).doubleValue();
+                    double logKappaScale = (Double.valueOf(logKappaStr)).doubleValue();
 
                     //Argument 4: Stellar mass, M, in solar masses
                     double massStar = (Double.valueOf(massStarStr)).doubleValue();
@@ -433,13 +433,13 @@ public class GrayFox3 extends Application {
                         logg = 8.5;
                         loggStr = "8.5";
                     }
-                    if (kappaScale < 0.1) {
-                        kappaScale = 0.1;
-                        kappaStr = "0.1";
+                    if (logKappaScale < -3.0) {
+                        logKappaScale = -3.0;
+                        logKappaStr = "-3.0";
                     }
-                    if (kappaScale > 3.0) {
-                        kappaScale = 3.0;
-                        kappaStr = "3.0";
+                    if (logKappaScale > 1.0) {
+                        logKappaScale = 1.0;
+                        logKappaStr = "1.0";
                     }
                     if (massStar < 0.25) {
                         massStar = 0.25;
@@ -652,7 +652,8 @@ public class GrayFox3 extends Application {
                     double teffSun = 5778.0;
                     double loggSun = 4.44;
                     double gravSun = Math.pow(10.0, loggSun);
-                    double kappaScaleSun = 1.0;
+                    double logKappaScaleSun = 0.0;
+                    double kappaScaleSun = Math.exp(logKappaScaleSun);
 //Solar units:
                     double massSun = 1.0;
                     double radiusSun = 1.0;
@@ -668,109 +669,154 @@ public class GrayFox3 extends Application {
                     double massX = 0.70; //Hydrogen
                     double massY = 0.28; //Helium
                     double massZSun = 0.02; // "metals"
+                    double kappaScale = Math.exp(logKappaScale);
                     double massZ = massZSun * kappaScale; //approximation
 
                     double logNH = 17.0;
                     double logN = (A12 - 12.0) + logNH;
 
+                    //Vega parameters (of Phoenix model- Teff not quite right!)
+                    double teffVega = 9950.0;
+                    double loggVega = 3.95;
+                    double gravVega = Math.pow(10.0, loggVega);
+                    double kappaScaleVega = 0.333;
+
                     //Output files:
                     String outfile = "gray_structure."
-                            + teffStr + "-" + loggStr + "-" + kappaStr + ".out";
+                            + teffStr + "-" + loggStr + "-" + logKappaStr + ".out";
                     String specFile = "gray_spectrum."
-                            + teffStr + "-" + loggStr + "-" + kappaStr + ".out";
+                            + teffStr + "-" + loggStr + "-" + logKappaStr + ".out";
                     String lineFile = "voigt_line."
-                            + teffStr + "-" + loggStr + "-" + kappaStr + "-" + xitStr + ".out";
+                            + teffStr + "-" + loggStr + "-" + logKappaStr + "-" + xitStr + ".out";
 
                     double logE = Math.log10(Math.E); // for debug output
 
                     //log_10 Rosseland optical depth scale  
                     double tauRos[][] = TauScale.tauScale(numDeps, log10MinDepth, log10MaxDepth);
 
-                    //Gray kinetic temeprature structure:
-                    double temp[][] = Temperature.temperature(numDeps, teff, tauRos);
-
+                    ////Gray kinetic temeprature structure:
+                    //double temp[][] = Temperature.temperature(numDeps, teff, tauRos);
                     //Now do the same for the Sun, for reference:
-                    double tempSun[][] = Temperature.temperature(numDeps, teffSun, tauRos);
-
+                    //double tempSun[][] = Temperature.temperature(numDeps, teffSun, tauRos);
+                    //Rescaled  kinetic temeprature structure: 
+                    double F0Vtemp = 7300.0;  // Teff of F0 V star (K)                           
+                    double[][] temp = new double[2][numDeps];
+                    if (teff < F0Vtemp) {
+                        //We're a cool star! - rescale from Sun!
+                        temp = ScaleSolar.phxSunTemp(teff, numDeps, tauRos);
+                    } else if (teff >= F0Vtemp) {
+                        //We're a HOT star! - rescale from Vega
+                        temp = ScaleVega.phxVegaTemp(teff, numDeps, tauRos);
+                    }
+                    //Now do the same for the Sun, for reference:
+                    double[][] tempSun = ScaleSolar.phxSunTemp(teffSun, numDeps, tauRos);
+                    //Now do the same for Vega, for reference:
+                    double[][] tempVega = ScaleVega.phxVegaTemp(teffVega, numDeps, tauRos);
                     //
                     // BEGIN Initial guess for Sun section:
                     //
-                    //Data amalgamated for several stars from Table 9.2, Observation and Analysis of Stellar Photospheres, 3rd Ed.,
-                    // David F. Gray ("Dfg")
-                    //** CAUTION: last two values in list are for logg=4.0, first 4 are for logg=4.6, and rest are for solar logg
-                    double[] tempDfg = {3017.0, 3111.0, 3262.0, 3592.0, 4310.0, 4325.0, 4345.0, 4370.0, 4405.0, 4445.0, 4488.0, 4524.0, 4561.0, 4608.0, 4660.0, 4720.0, 4800.0, 4878.0, 4995.0, 5132.0, 5294.0, 5490.0, 5733.0, 6043.0, 6429.0, 6904.0, 7467.0, 7962.0, 8358.0, 8630.0, 8811.0, 9643.0, 12945.0};
-                    double[] log10PgDfg = {3.22, 3.89, 4.45, 5.00, 2.87, 3.03, 3.17, 3.29, 3.41, 3.52, 3.64, 3.75, 3.86, 3.97, 4.08, 4.19, 4.30, 4.41, 4.52, 4.63, 4.74, 4.85, 4.95, 5.03, 5.10, 5.15, 5.18, 5.21, 5.23, 5.26, 5.29, 3.76, 3.88};
-                    double[] log10PeDfg = {-2.12, -1.51, -0.95, -0.26, -1.16, -1.02, -0.89, -0.78, -0.66, -0.55, -0.44, -0.33, -0.23, -0.12, -0.01, 0.10, 0.22, 0.34, 0.47, 0.61, 0.76, 0.93, 1.15, 1.43, 1.78, 2.18, 2.59, 2.92, 3.16, 3.32, 3.42, 2.96, 3.43};
-                    double[] log10KapOverPeDfg = {-0.46, -0.53, -0.64, -0.85, -1.22, -1.23, -1.24, -1.25, -1.26, -1.28, -1.30, -1.32, -1.33, -1.35, -1.37, -1.40, -1.43, -1.46, -1.50, -1.55, -1.60, -1.66, -1.73, -1.81, -1.91, -2.01, -2.11, -2.18, -2.23, -2.25, -2.27, -1.82, -1.73};
-
-                    int numDfg = tempDfg.length;
-                    double[] log10KapDfg = new double[numDfg];
-                    double[] logKapDfg = new double[numDfg];
-                    double[] logPgDfg = new double[numDfg];
-                    double[] logPeDfg = new double[numDfg];
-                    double pgDfg;
-
-                    for (int i = 0; i < numDfg; i++) {
-                        //Rescale pressures to logg=4.44; assume logP scales with logg through HSE
-                        if (i <= 3) {
-                            log10PgDfg[i] = log10PgDfg[i] - 0.2;
-                            log10PeDfg[i] = log10PeDfg[i] - 0.2;
-                        }
-                        if (i >= numDfg - 2) {
-                            log10PgDfg[i] = log10PgDfg[i] + 0.44;
-                            log10PeDfg[i] = log10PeDfg[i] + 0.44;
-                        }
-                        log10KapDfg[i] = log10KapOverPeDfg[i] + log10PeDfg[i];
-                        logKapDfg[i] = Math.log(Math.pow(10.0, log10KapDfg[i]));
-
-                        //Dress up DFG temp and pressure to look like what State.massDensity expects...
-                        logPgDfg[i] = Math.log(Math.pow(10.0, log10PgDfg[i]));
-                        logPeDfg[i] = Math.log(Math.pow(10.0, log10PeDfg[i]));
+                    //Scaled from Phoenix solar model:
+                    double[][] guessPGas = new double[2][numDeps];
+                    double[][] Ne = new double[2][numDeps];
+                    double[][] guessKappa = new double[2][numDeps];
+                    if (teff < 7300.0) {
+                        //We're a cool star - rescale from Sun!
+                        guessPGas = ScaleSolar.phxSunPGas(grav, numDeps, tauRos);
+                        Ne = ScaleSolar.phxSunNe(grav, numDeps, tauRos, temp, kappaScale);
+                        guessKappa = ScaleSolar.phxSunKappa(numDeps, tauRos, kappaScale);
+                    } else if (teff >= 7300.0) {
+                        //We're a HOT star!! - rescale from Vega
+                        guessPGas = ScaleVega.phxVegaPGas(grav, numDeps, tauRos);
+                        Ne = ScaleVega.phxVegaNe(grav, numDeps, tauRos, temp, kappaScale);
+                        guessKappa = ScaleVega.phxVegaKappa(numDeps, tauRos, kappaScale);
                     }
+                    //
+                    //Now do the same for the Sun, for reference:
+                    double[][] pGasSun = ScaleSolar.phxSunPGas(gravSun, numDeps, tauRos);
+                    double[][] NeSun = ScaleSolar.phxSunNe(gravSun, numDeps, tauRos, tempSun, kappaScaleSun);
+                    double[][] kappaSun = ScaleSolar.phxSunKappa(numDeps, tauRos, kappaScaleSun);
+                    //Now do the same for the Sun, for reference:
+                    double[][] pGasVega = ScaleVega.phxVegaPGas(gravVega, numDeps, tauRos);
+                    double[][] NeVega = ScaleVega.phxVegaNe(gravVega, numDeps, tauRos, tempVega, kappaScaleVega);
+                    double[][] kappaVega = ScaleVega.phxVegaKappa(numDeps, tauRos, kappaScaleVega);
 
-                    //Interpolate DFG data onto our Gray Teff structure:
-                    double[][] kapDfg2 = new double[2][numDeps];
-                    double[][] rhoDfg2 = new double[2][numDeps];
-                    //double[][] tempDfg2 = new double[2][numDeps];
-                    double[][] pressDfg2 = new double[4][numDeps];
-                    double[] logPeDfg2 = new double[numDeps];
-                    double[][] NeDfg2 = new double[2][numDeps];
+                    /*
+                     //Data amalgamated for several stars from Table 9.2, Observation and Analysis of Stellar Photospheres, 3rd Ed.,
+                     // David F. Gray ("Dfg")
+                     //  CAUTION: last two values in list are for logg=4.0, first 4 are for logg=4.6, and rest are for solar logg
+                     double[] tempDfg = {3017.0, 3111.0, 3262.0, 3592.0, 4310.0, 4325.0, 4345.0, 4370.0, 4405.0, 4445.0, 4488.0, 4524.0, 4561.0, 4608.0, 4660.0, 4720.0, 4800.0, 4878.0, 4995.0, 5132.0, 5294.0, 5490.0, 5733.0, 6043.0, 6429.0, 6904.0, 7467.0, 7962.0, 8358.0, 8630.0, 8811.0, 9643.0, 12945.0};
+                     double[] log10PgDfg = {3.22, 3.89, 4.45, 5.00, 2.87, 3.03, 3.17, 3.29, 3.41, 3.52, 3.64, 3.75, 3.86, 3.97, 4.08, 4.19, 4.30, 4.41, 4.52, 4.63, 4.74, 4.85, 4.95, 5.03, 5.10, 5.15, 5.18, 5.21, 5.23, 5.26, 5.29, 3.76, 3.88};
+                     double[] log10PeDfg = {-2.12, -1.51, -0.95, -0.26, -1.16, -1.02, -0.89, -0.78, -0.66, -0.55, -0.44, -0.33, -0.23, -0.12, -0.01, 0.10, 0.22, 0.34, 0.47, 0.61, 0.76, 0.93, 1.15, 1.43, 1.78, 2.18, 2.59, 2.92, 3.16, 3.32, 3.42, 2.96, 3.43};
+                     double[] log10KapOverPeDfg = {-0.46, -0.53, -0.64, -0.85, -1.22, -1.23, -1.24, -1.25, -1.26, -1.28, -1.30, -1.32, -1.33, -1.35, -1.37, -1.40, -1.43, -1.46, -1.50, -1.55, -1.60, -1.66, -1.73, -1.81, -1.91, -2.01, -2.11, -2.18, -2.23, -2.25, -2.27, -1.82, -1.73};
 
-                    //Prepare simple temperature vector for input to interpol():
-                    double[] tempSimp = new double[numDeps];
-                    for (int i = 0; i < numDeps; i++) {
-                        tempSimp[i] = tempSun[0][i];
-                    }
+                     int numDfg = tempDfg.length;
+                     double[] log10KapDfg = new double[numDfg];
+                     double[] logKapDfg = new double[numDfg];
+                     double[] logPgDfg = new double[numDfg];
+                     double[] logPeDfg = new double[numDfg];
+                     double pgDfg;
 
-                    //System.out.println("tauRos[1][i]   temp[0][i]   logE*logKapDfg2[i]   logE*pressDfg2[1][i]   logE*logPeDfg2[i]");
-                    for (int i = 0; i < numDeps; i++) {
+                     for (int i = 0; i < numDfg; i++) {
+                     //Rescale pressures to logg=4.44; assume logP scales with logg through HSE
+                     if (i <= 3) {
+                     log10PgDfg[i] = log10PgDfg[i] - 0.2;
+                     log10PeDfg[i] = log10PeDfg[i] - 0.2;
+                     }
+                     if (i >= numDfg - 2) {
+                     log10PgDfg[i] = log10PgDfg[i] + 0.44;
+                     log10PeDfg[i] = log10PeDfg[i] + 0.44;
+                     }
+                     log10KapDfg[i] = log10KapOverPeDfg[i] + log10PeDfg[i];
+                     logKapDfg[i] = Math.log(Math.pow(10.0, log10KapDfg[i]));
 
-                        if (tempSimp[i] <= tempDfg[0]) {
-                            kapDfg2[1][i] = logKapDfg[0];
-                            pressDfg2[1][i] = logPgDfg[0];
-                            logPeDfg2[i] = logPeDfg[0];
-                        } else if (tempSimp[i] >= tempDfg[numDfg - 1]) {
-                            kapDfg2[1][i] = logKapDfg[numDfg - 1];
-                            pressDfg2[1][i] = logPgDfg[numDfg - 1];
-                            logPeDfg2[i] = logPeDfg[numDfg - 1];
-                        } else {
-                            kapDfg2[1][i] = Interpol.interpol(tempDfg, logKapDfg, tempSimp[i]);
-                            pressDfg2[1][i] = Interpol.interpol(tempDfg, logPgDfg, tempSimp[i]);
-                            logPeDfg2[i] = Interpol.interpol(tempDfg, logPeDfg, tempSimp[i]);
-                        }
+                     //Dress up DFG temp and pressure to look like what State.massDensity expects...
+                     logPgDfg[i] = Math.log(Math.pow(10.0, log10PgDfg[i]));
+                     logPeDfg[i] = Math.log(Math.pow(10.0, log10PeDfg[i]));
+                     }
 
-                        kapDfg2[0][i] = Math.exp(kapDfg2[1][i]);
-                        pressDfg2[0][i] = Math.exp(pressDfg2[1][i]);
-                        pressDfg2[2][i] = 0.0;
-                        pressDfg2[3][i] = 0.0;
+                     //Interpolate DFG data onto our Gray Teff structure:
+                     double[][] kapDfg2 = new double[2][numDeps];
+                     double[][] rhoDfg2 = new double[2][numDeps];
+                     //double[][] tempDfg2 = new double[2][numDeps];
+                     double[][] pressDfg2 = new double[4][numDeps];
+                     double[] logPeDfg2 = new double[numDeps];
+                     double[][] NeDfg2 = new double[2][numDeps];
 
-                        //Electron number density, Ne:
-                        NeDfg2[1][i] = logPeDfg2[i] - tempSun[1][i] - Useful.logK();
-                        NeDfg2[0][i] = Math.exp(NeDfg2[1][i]);
+                     //Prepare simple temperature vector for input to interpol():
+                     double[] tempSimp = new double[numDeps];
+                     for (int i = 0; i < numDeps; i++) {
+                     tempSimp[i] = tempSun[0][i];
+                     }
 
-                        System.out.format("%12.8f   %12.8f   %12.8f   %12.8f   %12.8f%n", logE * tauRos[1][i], tempSun[0][i], logE * kapDfg2[1][i], logE * pressDfg2[1][i], logE * logPeDfg2[i]);
-                    }
+                     //System.out.println("tauRos[1][i]   temp[0][i]   logE*logKapDfg2[i]   logE*pressDfg2[1][i]   logE*logPeDfg2[i]");
+                     for (int i = 0; i < numDeps; i++) {
 
+                     if (tempSimp[i] <= tempDfg[0]) {
+                     kapDfg2[1][i] = logKapDfg[0];
+                     pressDfg2[1][i] = logPgDfg[0];
+                     logPeDfg2[i] = logPeDfg[0];
+                     } else if (tempSimp[i] >= tempDfg[numDfg - 1]) {
+                     kapDfg2[1][i] = logKapDfg[numDfg - 1];
+                     pressDfg2[1][i] = logPgDfg[numDfg - 1];
+                     logPeDfg2[i] = logPeDfg[numDfg - 1];
+                     } else {
+                     kapDfg2[1][i] = Interpol.interpol(tempDfg, logKapDfg, tempSimp[i]);
+                     pressDfg2[1][i] = Interpol.interpol(tempDfg, logPgDfg, tempSimp[i]);
+                     logPeDfg2[i] = Interpol.interpol(tempDfg, logPeDfg, tempSimp[i]);
+                     }
+
+                     kapDfg2[0][i] = Math.exp(kapDfg2[1][i]);
+                     pressDfg2[0][i] = Math.exp(pressDfg2[1][i]);
+                     pressDfg2[2][i] = 0.0;
+                     pressDfg2[3][i] = 0.0;
+
+                     //Electron number density, Ne:
+                     NeDfg2[1][i] = logPeDfg2[i] - tempSun[1][i] - Useful.logK();
+                     NeDfg2[0][i] = Math.exp(NeDfg2[1][i]);
+
+                     //System.out.format("%12.8f   %12.8f   %12.8f   %12.8f   %12.8f%n", logE * tauRos[1][i], tempSun[0][i], logE * kapDfg2[1][i], logE * pressDfg2[1][i], logE * logPeDfg2[i]);
+                     }
+                     */
                     //
                     // END initial guess for Sun section
                     //
@@ -779,9 +825,16 @@ public class GrayFox3 extends Application {
                     // mean molecular weight and Ne for Star & Sun
                     double[] mmw = State.mmwFn(numDeps, temp, kappaScale);
                     double[] mmwSun = State.mmwFn(numDeps, tempSun, kappaScaleSun);
-                    double[][] Ne = State.NeFn(numDeps, temp, NeDfg2, kappaScale);
+                    double[] mmwVega = State.mmwFn(numDeps, tempVega, kappaScaleVega);
+                    //double[][] Ne = State.NeFn(numDeps, temp, NeDfg2, kappaScale);
+                    //double[][] Ne = State.NeFn(numDeps, temp, scaleNe, kappaScale);
 
-                    rhoDfg2 = State.massDensity(numDeps, tempSun, pressDfg2, mmw, kappaScale);
+                    //rhoDfg2 = State.massDensity(numDeps, tempSun, pressDfg2, mmw, kappaScale);
+                    double[][] guessRho = State.massDensity(numDeps, temp, guessPGas, mmw, kappaScale);
+                    //Now do same for Sun:
+                    double[][] rhoSun = State.massDensity(numDeps, tempSun, pGasSun, mmwSun, kappaScaleSun);
+                    //Now do same for Vega:
+                    double[][] rhoVega = State.massDensity(numDeps, tempVega, pGasVega, mmwVega, kappaScaleVega);
 
                     // Create kappa structure here: Initialize solar kappa_Ross structure and
                     // scale it by logg, radius, and kappaScale:
@@ -822,20 +875,39 @@ public class GrayFox3 extends Application {
                      //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
                      double kappaSun[][] = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun);
                      */
-                    mode = 1;  //call kappas without knowledge of rho
+                    mode = 1;  //call kappas with knowledge of rho
 
                     logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
-                            numDeps, kappaScale, tauRos, temp, rhoDfg2);
+                            numDeps, kappaScale, tauRos, temp, guessRho);
                     logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
-                            numDeps, kappaScale, tauRos, temp, rhoDfg2);
+                            numDeps, kappaScale, tauRos, temp, guessRho);
                     //System.out.println("logNumsH2 " + logE * logNumsH2[2][36] + " logNumsH3 " + logE * logNumsH3[2][36]);
-                    double kappa[][] = Kappas.kappas(mode, numDeps, rhoDfg2, rhoDfg2, kapDfg2, kappaScale, logg, loggSun, teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
+                    double[][] kappa = new double[2][numDeps];
+                    if (teff < F0Vtemp) {
+                               //  System.out.println(" ************** Main kappa cool branch");
+                        kappa = Kappas.kappas(mode, numDeps, guessRho, rhoSun, kappaSun, kappaScale, logg, loggSun,
+                                teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
+                    } else if (teff >= F0Vtemp) {
+                       // System.out.println(" ************** Main kappa hot branch");
+                        kappa = Kappas.kappas(mode, numDeps, guessRho, rhoVega, kappaVega, kappaScale, logg, loggSun,
+                                teff, teffSun, radius, massX, massZ, tauRos, temp, tempVega, logNumsH3, logNumsH2);
+                    }
+                    //Test:
+                   // for (int i = 0; i < numDeps; i++) {
+                    //    //    kappa[0][i] = guessKappa[0][i];
+                    //    //   kappa[1][i] = guessKappa[1][i];
+                     //   System.out.println(" " + i + " " + logE * guessRho[1][i] + " " + logE * rhoVega[1][i] + " " + logE * kappaVega[1][i] + " "
+                     //           + temp[0][i] + " " + tempVega[0][i] + " " + logE * kappa[1][i] 
+                     //           + " Ne " + logE*Ne[1][i] + " logNumsH3 " + logE*logNumsH3[1][i] + " logNumsH2 " + logE*logNumsH2[1][i]);
+                   // }
                     //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
-                    logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
-                            numDeps, kappaScale, tauRos, tempSun, rhoDfg2);
-                    logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
-                            numDeps, kappaScale, tauRos, tempSun, rhoDfg2);
-                    double kappaSun[][] = Kappas.kappas(mode, numDeps, rhoDfg2, rhoDfg2, kapDfg2, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun, logNumsH3, logNumsH2);
+                    //logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
+                    //        numDeps, kappaScale, tauRos, tempSun, rhoSun);
+                    //logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
+                    //        numDeps, kappaScale, tauRos, tempSun, rhoSun);
+                    ////Update kappaSun for self-consistency??
+                    //kappaSun = Kappas.kappas(mode, numDeps, rhoSun, rhoSun, kappaSun, kappaScaleSun, loggSun, loggSun,
+                    //        teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun, logNumsH3, logNumsH2);
 
                     //Next solve hydrostatic eq for P scale on the tau scale - need to pick a depth dependent kappa value!
                     //   - scale kapp_Ross with log(g) from solar value? - Kramers opacity law?
@@ -843,6 +915,7 @@ public class GrayFox3 extends Application {
                     //press is a 4 x numDeps array:
                     // rows 0 & 1 are linear and log *gas* pressure, respectively
                     // rows 2 & 3 are linear and log *radiation* pressure
+                    System.out.println("Calling hydrostat for target:");
                     double press[][] = Hydrostat.hydrostatic(numDeps, grav, tauRos, kappa, temp);
 
                     // Then solve eos for the rho scale - need to pick a mean molecular weight, mu
@@ -850,7 +923,8 @@ public class GrayFox3 extends Application {
 
                     //Now do the same for the Sun, for reference:
                     double pressSun[][] = Hydrostat.hydrostatic(numDeps, gravSun, tauRos, kappaSun, tempSun);
-                    double[][] rhoSun = State.massDensity(numDeps, tempSun, pressSun, mmwSun, kappaScaleSun);
+                    double pressVega[][] = Hydrostat.hydrostatic(numDeps, gravVega, tauRos, kappaVega, tempVega);
+                    //rhoSun = State.massDensity(numDeps, tempSun, pressSun, mmwSun, kappaScaleSun);
                     //double depthsSun[] = DepthScale.depthScale(numDeps, tauRos, kappaSun, rhoSun);
                     // Special one-time print-out of Sun's structure:
                     // System.out.println("Sun: " + " i " + " temp " + " kappa " + " pressGas " + " pressRad " + " rho " + " depths ");
@@ -864,18 +938,24 @@ public class GrayFox3 extends Application {
                     //compute kappas again with in situ densities thsi time:
                     mode = 1;  //call kappas ** with ** knowledge of rho
                     logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
-                            numDeps, kappaScale, tauRos, temp, rho);
+                             numDeps, kappaScale, tauRos, temp, rho);
                     logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
                             numDeps, kappaScale, tauRos, temp, rho);
-                    kappa = Kappas.kappas(mode, numDeps, rho, rhoSun, kapDfg2, kappaScale, logg, loggSun, teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
+                    if (teff < F0Vtemp) {
+                         kappa = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaSun, kappaScale, logg, loggSun,
+                                teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
+                     } else if (teff >= F0Vtemp) {
+                        kappa = Kappas.kappas(mode, numDeps, rho, rhoVega, kappaVega, kappaScale, logg, loggSun,
+                                teff, teffSun, radius, massX, massZ, tauRos, temp, tempVega, logNumsH3, logNumsH2);
+                     }
                     //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
                     //kappaSun = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun);
                     // Then construct geometric depth scale from tau, kappa and rho
                     double depths[] = DepthScale.depthScale(numDeps, tauRos, kappa, rho);
 
                     double newTemp[][] = new double[2][numDeps];
-                    int numTCorr = 10;  //test
-                    //int numTCorr = 0;
+                    //int numTCorr = 10;  //test
+                    int numTCorr = 0;
                     for (int i = 0; i < numTCorr; i++) {
                         //newTemp = TCorr.tCorr(numDeps, tauRos, temp);
                         newTemp = MulGrayTCorr.mgTCorr(numDeps, teff, tauRos, temp, rho, kappa);
@@ -907,23 +987,34 @@ public class GrayFox3 extends Application {
                      }
                      }
                      */
-                    /*
-                     //Recall hydrostat with updates temps            
-                     //Recall state withupdated Press                    
-                     //recall kappas withupdates rhos
-                     //Recall depths with re-updated kappas
-                     press = Hydrostat.hydrostatic(numDeps, grav, tauRos, kappa, temp);
-                     rho = State.massDensity(numDeps, temp, press, mmw, kappaScale);
-                     //pressSun = Hydrostat.hydrostatic(numDeps, gravSun, tauRos, kappaSun, tempSun, logRadius);
-                     //rhoSun = State.massDensity(numDeps, tempSun, pressSun, kappaScaleSun);
-                     mode = 1;  //call kappas ** with ** knowledge of rho
-                     Ne = State.NeFn(numDeps, temp, NeDfg2, kappaScale);
-                     logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
-                     numDeps, kappaScale, tauRos, temp, rho);
-                     kappa = Kappas.kappas(mode, numDeps, rho, rhoSun, kapDfg2, kappaScale, logg, loggSun, teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun);
-                     //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
-                     //kappaSun = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun);
-                     */
+                    boolean ifTcorr = false;
+                    boolean ifConvec = false;
+                    if ((ifTcorr == true) || (ifConvec == true)) {
+                        //Recall hydrostat with updates temps            
+                        //Recall state withupdated Press                    
+                        //recall kappas withupdates rhos
+                        //Recall depths with re-updated kappas
+                        press = Hydrostat.hydrostatic(numDeps, grav, tauRos, kappa, temp);
+                        rho = State.massDensity(numDeps, temp, press, mmw, kappaScale);
+                        //pressSun = Hydrostat.hydrostatic(numDeps, gravSun, tauRos, kappaSun, tempSun, logRadius);
+                        //rhoSun = State.massDensity(numDeps, tempSun, pressSun, kappaScaleSun);
+                        mode = 1;  //call kappas ** with ** knowledge of rho
+                        //Ne = State.NeFn(numDeps, temp, NeDfg2, kappaScale);
+                        logNumsH3 = LevelPops.levelPops(lamJump3, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH3, gw1H, gw2H, gwLH3,
+                                numDeps, kappaScale, tauRos, temp, rho);
+                        logNumsH2 = LevelPops.levelPops(lamJump2, logNH, Ne, ionizedHI, chiI1H, chiI2H, chiLH2, gw1H, gw2H, gwLH2,
+                                numDeps, kappaScale, tauRos, temp, rho);
+                        if (teff < F0Vtemp) {
+                            kappa = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaSun, kappaScale, logg, loggSun,
+                                    teff, teffSun, radius, massX, massZ, tauRos, temp, tempSun, logNumsH3, logNumsH2);
+                        } else if (teff >= F0Vtemp) {
+                            kappa = Kappas.kappas(mode, numDeps, rho, rhoVega, kappaVega, kappaScale, logg, loggSun,
+                                    teff, teffSun, radius, massX, massZ, tauRos, temp, tempVega, logNumsH3, logNumsH2);
+                        }
+                    }
+                    //double kappaSun[][] = Kappas.kappas(numDeps, kappaScaleSun, teffSun, teffSun, loggSun, loggSun);
+                    //kappaSun = Kappas.kappas(mode, numDeps, rho, rhoSun, kappaScaleSun, loggSun, loggSun, teffSun, teffSun, radiusSun, massX, massZSun, tauRos, tempSun, tempSun);
+
                     depths = DepthScale.depthScale(numDeps, tauRos, kappa, rho);
 
                     //Okay - Now all the emergent radiation stuff:
@@ -1018,216 +1109,216 @@ public class GrayFox3 extends Application {
                     listGw2[0] = 2.0;
                     listGwL[0] = 2.0;
                     listIonized[0] = true;
+                    
+                     //CaII H
+                     //listName[1] = "Ca II H";
+                     listElement[1] = "Ca";
+                     listLam0[1] = 396.847;
+                     listA12[1] = 6.34;
+                     listLogf[1] = -0.482;
+                     listChiI1[1] = 6.113;
+                     listChiI2[1] = 11.872;
+                     //This is necessary for consistency with Stage II treatment of user-defined spectral line:
+                     listChiL[1] = 0.01 + listChiI1[1];
+                     listMass[1] = 40.078;
+                     listLogGammaCol[1] = 1.0;
+                     listGw1[1] = 1.0;
+                     listGw2[1] = 2.0;
+                     listGwL[1] = 2.0;
+                     listIonized[1] = true;
 
-                    //CaII H
-                    //listName[1] = "Ca II H";
-                    listElement[1] = "Ca";
-                    listLam0[1] = 396.847;
-                    listA12[1] = 6.34;
-                    listLogf[1] = -0.482;
-                    listChiI1[1] = 6.113;
-                    listChiI2[1] = 11.872;
-                    //This is necessary for consistency with Stage II treatment of user-defined spectral line:
-                    listChiL[1] = 0.01 + listChiI1[1];
-                    listMass[1] = 40.078;
-                    listLogGammaCol[1] = 1.0;
-                    listGw1[1] = 1.0;
-                    listGw2[1] = 2.0;
-                    listGwL[1] = 2.0;
-                    listIonized[1] = true;
+                     //Fe I 4045
+                     //listName[2] = "Fe I";
+                     listElement[2] = "Fe";
+                     listLam0[2] = 404.581;
+                     listA12[2] = 7.50; //??????
+                     listLogf[2] = -0.674;
+                     listChiI1[2] = 7.902;
+                     listChiI2[2] = 16.199;
+                     listChiL[2] = 1.485;
+                     listMass[2] = 55.845;
+                     listLogGammaCol[2] = 0.0;
+                     listGw1[2] = 1.0;
+                     listGw2[2] = 1.0;
+                     listGwL[2] = 9.0;
+                     listIonized[2] = false;
 
-                    //Fe I 4045
-                    //listName[2] = "Fe I";
-                    listElement[2] = "Fe";
-                    listLam0[2] = 404.581;
-                    listA12[2] = 7.50; //??????
-                    listLogf[2] = -0.674;
-                    listChiI1[2] = 7.902;
-                    listChiI2[2] = 16.199;
-                    listChiL[2] = 1.485;
-                    listMass[2] = 55.845;
-                    listLogGammaCol[2] = 0.0;
-                    listGw1[2] = 1.0;
-                    listGw2[2] = 1.0;
-                    listGwL[2] = 9.0;
-                    listIonized[2] = false;
+                     //Hdelta
+                     //listName[3] = "H I &#948";
+                     listElement[3] = "H";
+                     listLam0[3] = 410.174;
+                     listA12[3] = 12.0;    //By definition - it's Hydrogen
+                     listLogf[3] = -1.655;
+                     listChiI1[3] = 13.6;
+                     listChiI2[3] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
+                     listChiL[3] = 10.2;
+                     listMass[3] = 1.0;
+                     listLogGammaCol[3] = 1.0;
+                     listGw1[3] = 2.0; // 2n^2
+                     listGw2[3] = 1.0;
+                     listGwL[3] = 8.0; // 2n^2
+                     listIonized[3] = false;
 
-                    //Hdelta
-                    //listName[3] = "H I &#948";
-                    listElement[3] = "H";
-                    listLam0[3] = 410.174;
-                    listA12[3] = 12.0;    //By definition - it's Hydrogen
-                    listLogf[3] = -1.655;
-                    listChiI1[3] = 13.6;
-                    listChiI2[3] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
-                    listChiL[3] = 10.2;
-                    listMass[3] = 1.0;
-                    listLogGammaCol[3] = 1.0;
-                    listGw1[3] = 2.0; // 2n^2
-                    listGw2[3] = 1.0;
-                    listGwL[3] = 8.0; // 2n^2
-                    listIonized[3] = false;
+                     //CaI 4227
+                     //listName[4] = "Ca I";
+                     listElement[4] = "Ca";
+                     listLam0[4] = 422.673;
+                     listA12[4] = 6.34;
+                     listLogf[4] = 0.243;
+                     listChiI1[4] = 6.113;
+                     listChiI2[4] = 11.872;
+                     listChiL[4] = 0.00;
+                     listMass[4] = 40.078;
+                     listLogGammaCol[4] = 1.0;
+                     listGw1[4] = 1.0;
+                     listGw2[4] = 1.0;
+                     listGwL[4] = 1.0;
+                     listIonized[4] = false;
 
-                    //CaI 4227
-                    //listName[4] = "Ca I";
-                    listElement[4] = "Ca";
-                    listLam0[4] = 422.673;
-                    listA12[4] = 6.34;
-                    listLogf[4] = 0.243;
-                    listChiI1[4] = 6.113;
-                    listChiI2[4] = 11.872;
-                    listChiL[4] = 0.00;
-                    listMass[4] = 40.078;
-                    listLogGammaCol[4] = 1.0;
-                    listGw1[4] = 1.0;
-                    listGw2[4] = 1.0;
-                    listGwL[4] = 1.0;
-                    listIonized[4] = false;
+                     //Fe I 4271
+                     //listName[5] = "Fe I";
+                     listElement[5] = "Fe";
+                     listLam0[5] = 427.176;
+                     listA12[5] = 7.50; //??????
+                     listLogf[5] = -1.118;
+                     listChiI1[5] = 7.902;
+                     listChiI2[5] = 16.199;
+                     listChiL[5] = 1.485;
+                     listMass[5] = 55.845;
+                     listLogGammaCol[5] = 0.0;
+                     listGw1[5] = 1.0;
+                     listGw2[5] = 1.0;
+                     listGwL[5] = 9.0;
+                     listIonized[5] = false;
 
-                    //Fe I 4271
-                    //listName[5] = "Fe I";
-                    listElement[5] = "Fe";
-                    listLam0[5] = 427.176;
-                    listA12[5] = 7.50; //??????
-                    listLogf[5] = -1.118;
-                    listChiI1[5] = 7.902;
-                    listChiI2[5] = 16.199;
-                    listChiL[5] = 1.485;
-                    listMass[5] = 55.845;
-                    listLogGammaCol[5] = 0.0;
-                    listGw1[5] = 1.0;
-                    listGw2[5] = 1.0;
-                    listGwL[5] = 9.0;
-                    listIonized[5] = false;
+                     //Hgamma
+                     //[6] = "H I &#947";
+                     listElement[6] = "H";
+                     listLam0[6] = 434.047;
+                     listA12[6] = 12.0;    //By definition - it's Hydrogen
+                     listLogf[6] = -1.350;
+                     listChiI1[6] = 13.6;
+                     listChiI2[6] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
+                     listChiL[6] = 10.2;
+                     listMass[6] = 1.0;
+                     listLogGammaCol[6] = 1.0;
+                     listGw1[6] = 2.0; // 2n^2
+                     listGw2[6] = 1.0;
+                     listGwL[6] = 8.0; // 2n^2
+                     listIonized[6] = false;
 
-                    //Hgamma
-                    //[6] = "H I &#947";
-                    listElement[6] = "H";
-                    listLam0[6] = 434.047;
-                    listA12[6] = 12.0;    //By definition - it's Hydrogen
-                    listLogf[6] = -1.350;
-                    listChiI1[6] = 13.6;
-                    listChiI2[6] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
-                    listChiL[6] = 10.2;
-                    listMass[6] = 1.0;
-                    listLogGammaCol[6] = 1.0;
-                    listGw1[6] = 2.0; // 2n^2
-                    listGw2[6] = 1.0;
-                    listGwL[6] = 8.0; // 2n^2
-                    listIonized[6] = false;
+                     //He I 4387
+                     //listName[7] = "He I";
+                     listElement[7] = "He";
+                     listLam0[7] = 438.793;
+                     listA12[7] = 10.93; //??????
+                     listLogf[7] = -1.364;
+                     listChiI1[7] = 24.587;
+                     listChiI2[7] = 54.418;
+                     listChiL[7] = 21.218;
+                     listMass[7] = 4.003;
+                     listLogGammaCol[7] = 0.0;
+                     listGw1[7] = 1.0;
+                     listGw2[7] = 1.0;
+                     listGwL[7] = 3.0;
+                     listIonized[7] = false;
 
-                    //He I 4387
-                    //listName[7] = "He I";
-                    listElement[7] = "He";
-                    listLam0[7] = 438.793;
-                    listA12[7] = 10.93; //??????
-                    listLogf[7] = -1.364;
-                    listChiI1[7] = 24.587;
-                    listChiI2[7] = 54.418;
-                    listChiL[7] = 21.218;
-                    listMass[7] = 4.003;
-                    listLogGammaCol[7] = 0.0;
-                    listGw1[7] = 1.0;
-                    listGw2[7] = 1.0;
-                    listGwL[7] = 3.0;
-                    listIonized[7] = false;
+                     //He I 4471
+                     //listName[8] = "He I";
+                     listElement[8] = "He";
+                     listLam0[8] = 447.147;
+                     listA12[8] = 10.93; //??????
+                     listLogf[8] = -0.986;
+                     listChiI1[8] = 24.587;
+                     listChiI2[8] = 54.418;
+                     listChiL[8] = 20.964;
+                     listMass[8] = 4.003;
+                     listLogGammaCol[8] = 0.0;
+                     listGw1[8] = 1.0;
+                     listGw2[8] = 1.0;
+                     listGwL[8] = 5.0;
+                     listIonized[8] = false;
 
-                    //He I 4471
-                    //listName[8] = "He I";
-                    listElement[8] = "He";
-                    listLam0[8] = 447.147;
-                    listA12[8] = 10.93; //??????
-                    listLogf[8] = -0.986;
-                    listChiI1[8] = 24.587;
-                    listChiI2[8] = 54.418;
-                    listChiL[8] = 20.964;
-                    listMass[8] = 4.003;
-                    listLogGammaCol[8] = 0.0;
-                    listGw1[8] = 1.0;
-                    listGw2[8] = 1.0;
-                    listGwL[8] = 5.0;
-                    listIonized[8] = false;
+                     //Hbeta
+                     //listName[9] = "H I &#946";
+                     listElement[9] = "H";
+                     listLam0[9] = 486.128;
+                     listA12[9] = 12.0;    //By definition - it's Hydrogen
+                     listLogf[9] = -0.914;
+                     listChiI1[9] = 13.6;
+                     listChiI2[9] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
+                     listChiL[9] = 10.2;
+                     listMass[9] = 1.0;
+                     listLogGammaCol[9] = 1.0;
+                     listGw1[9] = 2.0;  // 2n^2
+                     listGw2[9] = 1.0;
+                     listGwL[9] = 8.0;  // 2n^2
+                     listIonized[9] = false;
 
-                    //Hbeta
-                    //listName[9] = "H I &#946";
-                    listElement[9] = "H";
-                    listLam0[9] = 486.128;
-                    listA12[9] = 12.0;    //By definition - it's Hydrogen
-                    listLogf[9] = -0.914;
-                    listChiI1[9] = 13.6;
-                    listChiI2[9] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
-                    listChiL[9] = 10.2;
-                    listMass[9] = 1.0;
-                    listLogGammaCol[9] = 1.0;
-                    listGw1[9] = 2.0;  // 2n^2
-                    listGw2[9] = 1.0;
-                    listGwL[9] = 8.0;  // 2n^2
-                    listIonized[9] = false;
+                     //MgIb1
+                     //listName[10] = "Mg I <em>b</em><sub>1</sub>";
+                     listElement[10] = "Mg";
+                     listLam0[10] = 518.360;  //nm
+                     listA12[10] = 7.60;    // Grevesse & Sauval 98
+                     listLogf[10] = -0.867;
+                     listChiI1[10] = 7.646;
+                     listChiI2[10] = 15.035;
+                     listChiL[10] = 2.717;
+                     listMass[10] = 24.305;
+                     listLogGammaCol[10] = 1.0;
+                     listGw1[10] = 1.0;
+                     listGw2[10] = 1.0;
+                     listGwL[10] = 5.0;
+                     listIonized[10] = false;
 
-                    //MgIb1
-                    //listName[10] = "Mg I <em>b</em><sub>1</sub>";
-                    listElement[10] = "Mg";
-                    listLam0[10] = 518.360;  //nm
-                    listA12[10] = 7.60;    // Grevesse & Sauval 98
-                    listLogf[10] = -0.867;
-                    listChiI1[10] = 7.646;
-                    listChiI2[10] = 15.035;
-                    listChiL[10] = 2.717;
-                    listMass[10] = 24.305;
-                    listLogGammaCol[10] = 1.0;
-                    listGw1[10] = 1.0;
-                    listGw2[10] = 1.0;
-                    listGwL[10] = 5.0;
-                    listIonized[10] = false;
+                     //NaID2
+                     //listName[11] = "Na I <em>D</em><sub>2</sub>";
+                     listElement[11] = "Na";
+                     listLam0[11] = 588.995;
+                     listA12[11] = 6.24;    // Grevesse & Sauval 98
+                     listLogf[11] = -0.193;
+                     listChiI1[11] = 5.139;
+                     listChiI2[11] = 47.286;
+                     listChiL[11] = 0.0;
+                     listMass[11] = 22.990;
+                     listLogGammaCol[11] = 1.0;
+                     listGw1[11] = 2.0;
+                     listGw2[11] = 1.0;
+                     listGwL[11] = 2.0;
+                     listIonized[11] = false;
 
-                    //NaID2
-                    //listName[11] = "Na I <em>D</em><sub>2</sub>";
-                    listElement[11] = "Na";
-                    listLam0[11] = 588.995;
-                    listA12[11] = 6.24;    // Grevesse & Sauval 98
-                    listLogf[11] = -0.193;
-                    listChiI1[11] = 5.139;
-                    listChiI2[11] = 47.286;
-                    listChiL[11] = 0.0;
-                    listMass[11] = 22.990;
-                    listLogGammaCol[11] = 1.0;
-                    listGw1[11] = 2.0;
-                    listGw2[11] = 1.0;
-                    listGwL[11] = 2.0;
-                    listIonized[11] = false;
+                     //NaID1
+                     //listName[12] = "Na I <em>D</em><sub>1</sub>";
+                     listElement[12] = "Na";
+                     listLam0[12] = 589.592;  //nm
+                     listA12[12] = 6.24;    // Grevesse & Sauval 98    
+                     listLogf[12] = -0.495;
+                     listChiI1[12] = 5.139;
+                     listChiI2[12] = 47.286;
+                     listChiL[12] = 0.0;
+                     listMass[12] = 22.990;
+                     listLogGammaCol[12] = 1.0;
+                     listGw1[12] = 2.0;
+                     listGw2[12] = 1.0;
+                     listGwL[12] = 2.0;
+                     listIonized[12] = false;
 
-                    //NaID1
-                    //listName[12] = "Na I <em>D</em><sub>1</sub>";
-                    listElement[12] = "Na";
-                    listLam0[12] = 589.592;  //nm
-                    listA12[12] = 6.24;    // Grevesse & Sauval 98    
-                    listLogf[12] = -0.495;
-                    listChiI1[12] = 5.139;
-                    listChiI2[12] = 47.286;
-                    listChiL[12] = 0.0;
-                    listMass[12] = 22.990;
-                    listLogGammaCol[12] = 1.0;
-                    listGw1[12] = 2.0;
-                    listGw2[12] = 1.0;
-                    listGwL[12] = 2.0;
-                    listIonized[12] = false;
-
-                    //Halpha
-                    //listName[13] = "H I &#945";
-                    listElement[13] = "H";
-                    listLam0[13] = 656.282;
-                    listA12[13] = 12.0;    //By definition - it's Hydrogen
-                    listLogf[13] = -0.193;
-                    listChiI1[13] = 13.6;
-                    listChiI2[13] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
-                    listChiL[13] = 10.2;
-                    listMass[13] = 1.0;
-                    listLogGammaCol[13] = 1.0;
-                    listGw1[13] = 2.0; // 2n^2
-                    listGw2[13] = 1.0;
-                    listGwL[13] = 8.0; // 2n^2
-                    listIonized[13] = false;
-
+                     //Halpha
+                     //listName[13] = "H I &#945";
+                     listElement[13] = "H";
+                     listLam0[13] = 656.282;
+                     listA12[13] = 12.0;    //By definition - it's Hydrogen
+                     listLogf[13] = -0.193;
+                     listChiI1[13] = 13.6;
+                     listChiI2[13] = 1.0e6;   //Set very high arbitrary value - there is no "H III"!
+                     listChiL[13] = 10.2;
+                     listMass[13] = 1.0;
+                     listLogGammaCol[13] = 1.0;
+                     listGw1[13] = 2.0; // 2n^2
+                     listGw2[13] = 1.0;
+                     listGwL[13] = 8.0; // 2n^2
+                     listIonized[13] = false;
+                     
                     //Notes
                     //if Hydrogen or Helium, kappaScale should be unity for these purposes:
                     double kappaScaleList = 1.0; //initialization                   
@@ -1473,7 +1564,7 @@ public class GrayFox3 extends Application {
                     double[][] lineFlux = new double[2][numPoints];
                     double[] lineFluxLam = new double[2];
 
-                    lineMode = true;  //scattering not working correctly?
+                    lineMode = false;  //scattering not working correctly?
 
                     for (int il = 0; il < numPoints; il++) {
 

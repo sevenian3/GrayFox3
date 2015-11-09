@@ -46,7 +46,10 @@ public class Hydrostat {
      * @return
      */
     public static double[][] hydrostatic(int numDeps, double grav, double[][] tauRos, double[][] kappa, double[][] temp) {
-
+        
+        //System.out.println("grav " + grav);
+        double logE = Math.log10(Math.E); // for debug output
+        
         //double c = Useful.c;
         double logC = Useful.logC();
         //double sigma = Useful.sigma;
@@ -150,7 +153,8 @@ public class Hydrostat {
             //press[2][i] = 0.0;  //test
             //press[3][i] = -99.0;  //test
 
-            //System.out.println("HYDROSTAT: temp " + temp[0][i] + " Pgas " + press[0][i] + " Prad " + pRad);
+            //System.out.println("HYDROSTAT: temp " + temp[0][i] + " Pgas " + logE*press[1][i] + " Prad " + logE*press[3][i] + " deltaX " + deltaX + " help " + help 
+            //        + " kappa[0][i] " + kappa[0][i]);
             //Set lower boundary of next step:
             //p1 = p2; //Euler
             p1 = p2;  // 2nd O R-K

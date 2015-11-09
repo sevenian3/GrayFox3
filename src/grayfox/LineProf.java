@@ -106,7 +106,12 @@ public class LineProf {
             logGamma = press[1][id] - pressSun[1][tau1] + 0.7 * (tempSun[1][tau1] - temp[1][id]) + logGammaSun;
             //logGamma = logGamma + logFudge + logGammaCol;
             logGamma = logGamma + logGammaCol;
-            //System.out.println("LineGrid: logGamma: " + id + " " + logE * logGamma);
+            //if (id == 16) {
+            //    System.out.println("lam0In " + lam0In);
+            //    System.out.println("tau1, press[1][id], pressSun[1][tau1], tempSun[1][tau1], temp[1][id], logGammaSun "
+            //            + tau1 + " " + " " + logE*press[1][id] + " " + logE*pressSun[1][tau1] + " " + tempSun[1][tau1] + " " + temp[1][id] + " " + logE*logGammaSun);
+            //    System.out.println("LineGrid: logGamma: " + id + " " + logE * logGamma);
+            //}
 
             //Voigt "a" parameter with line centre wavelength:
             logA = 2.0 * logLam0 + logGamma - ln4pi - logC - logDopp;
@@ -152,8 +157,9 @@ public class LineProf {
                 logVoigt = Math.log(voigt) + 2.0 * logLam0 - lnSqRtPi - logDopp - logC;
 
                 lineProf[il][id] = Math.exp(logVoigt);
-                //if (id == 36) {
-                //    System.out.println("il " + il + " linePoints " + 1.0e7 * linePoints[0][il] + " id " + id + " lineProf[il][id] " + lineProf[il][id]);
+               // if (id == 16) {
+               //     System.out.println("lam0In " + lam0In);
+               //     System.out.println("il " + il + " linePoints " + 1.0e7 * linePoints[0][il] + " id " + id + " lineProf[il][id] " + lineProf[il][id]);
                 //}
 
                 //System.out.println("LineProf: il, id, lineProf[il][id]: " + il + " " + id + " " + lineProf[il][id]);

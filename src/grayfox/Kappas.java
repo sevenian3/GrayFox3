@@ -40,16 +40,18 @@ public class Kappas {
      * @param kappaScale
      * @param teff
      * @param teffSun
-     * @param logg
-     * @param loggSun
+     * @param grav
+     * @param gravSun
      * @return
      */
     //** Input parameter mode: valid values are 0 or 1
     // If mode = 0: We don't yet know the mass density, rho & rhoSun, yet - the rhos passed in are meaningless and rhos must be faked
     // If mode = 1" We already have a previous in situ calculation of mass density, rho & rhoSun - passed in as parameters
     //public static double[][] kappas(int numDeps, double kappaScale,  double teff, double teffSun, double logg, double loggSun) {
-    public static double[][] kappas(int mode, int numDeps, double[][] rho, double[][] rhoSun, double[][] kappaRosSun, double kappaScale, double logg, double loggSun, double teff, double teffSun, double radius,
-            double massX, double massZ, double[][] tauRos, double[][] temp, double[][] tempSun, double[][] logNumsH3, double[][] logNumsH2) {
+    public static double[][] kappas(int mode, int numDeps, double[][] rho, double[][] rhoRef, double[][] kappaRef, double kappaScale, double grav, double gravSun, double teff, double teffSun, double radius,
+            double massX, double massZ, double[][] tauRos, double[][] temp, double[][] tempRef, double[][] logNumsH3, double[][] logNumsH2) {
+
+        double logE = Math.log10(Math.PI);
 
         double[][] kappa = new double[2][numDeps];
 
@@ -62,15 +64,18 @@ public class Kappas {
         double logRhoStarFake = 0.0; //enforced initialization
         double logRhoSunFake = 0.0;  //enforced initialization
 
+        double logEg = Math.log(grav);  //base e!
+        double logEgSun = Math.log(gravSun);  //base e!
+
         if (mode == 0) {
             //We don't yet know rho & rhoSun - the rhos passed in are meaningless - fake up rhos:
             // Approximate mass density in atmosphere by scaling with logg and radius, then diluting:
             dilute = 5.0e-5; //tuned to give rho ~10^-1 g/cm^-3 in Sun's atmosphere
-            logRhoStarFake = Math.log(3.0 / 4.0 / Math.PI) - Useful.logGConst() + logg - Math.log(Useful.rSun * radius);
+            logRhoStarFake = Math.log(3.0 / 4.0 / Math.PI) - Useful.logGConst() + logEg - Math.log(Useful.rSun * radius);
             rhoStarFake = dilute * Math.exp(logRhoStarFake);
 
             // Do the same for Sun for consistency
-            logRhoSunFake = Math.log(3.0 / 4.0 / Math.PI) - Useful.logGConst() + loggSun - Useful.logRSun();
+            logRhoSunFake = Math.log(3.0 / 4.0 / Math.PI) - Useful.logGConst() + logEgSun - Useful.logRSun();
             rhoSunFake = dilute * Math.exp(logRhoSunFake);
         }
 
@@ -111,19 +116,25 @@ public class Kappas {
         for (int i = 0; i < numDeps; i++) {
             logNH3 = logNumsH3[2][i];
             logNH2 = logNumsH2[2][i];
-            System.out.println("i " + i);
+            //System.out.println("i " + i);
             if (mode == 0) {
                 numerator = kappaFac(numDeps, hotT, logRhoStarFake, temp[1][i], massX, massZ, logNH3, logNH2);
-                denominator = kappaFac(numDeps, hotT, logRhoSunFake, tempSun[1][i], massX, massZSun, logNH3, logNH2);
+                denominator = kappaFac(numDeps, hotT, logRhoSunFake, tempRef[1][i], massX, massZSun, logNH3, logNH2);
             } else if (mode == 1) {
                 numerator = kappaFac(numDeps, hotT, rho[1][i], temp[1][i], massX, massZ, logNH3, logNH2);
                 //numerator = kappaFac(numDeps, hotT, rhoSun[1][i], temp[1][i], massX, massZ);
-                denominator = kappaFac(numDeps, hotT, rhoSun[1][i], tempSun[1][i], massX, massZSun, logNH3, logNH2);
+                denominator = kappaFac(numDeps, hotT, rhoRef[1][i], tempRef[1][i], massX, massZSun, logNH3, logNH2);
+
             }
+           // if (i == 16) {
+           //     System.out.println("numerator " + numerator + " denominator " + denominator);
+           // }
+
             //System.out.println("i " + i + " kappaRosSun[0][i] " + kappaRosSun[0][i]);
-            kappa[0][i] = reScale * kappaRosSun[0][i] * (numerator / denominator);
+            kappa[0][i] = reScale * kappaRef[0][i] * (numerator / denominator);
             kappa[1][i] = Math.log(kappa[0][i]);
             //System.out.println("kappa factor: " + (numerator / denominator) + " numerator: " + numerator + " denominator: " + denominator);
+            //System.out.println("Kappas: kappa[1][i], i= " + i + " " + logE*kappa[1][i]);
         }
 
         return kappa;
@@ -137,12 +148,16 @@ public class Kappas {
         double kapFac = 0.0;
 
         // These values tuned to produce total kappas of right order of magnitude for Sun
-        double constbf = 2.34e19; // b-f pre-factor cm^2/g
-        double constff = 3.68e15; // f-f pre-factor cm^2/g
-        double constes = 0.2;  // Thomson scattering from free electron pre-factor cm^2/g
-        double constHm = 3.9e-31 / 0.02; // H^- b-f pre-factor with 1/0.02 factor from Z term cm^2/g
+        double fudgebf = 1.0e-3;
+        double constbf = fudgebf * 4.34e22; // b-f pre-factor cm^2/g
+        double fudgeff = 1.0e-4;
+        double constff = fudgeff * 3.68e19; // f-f pre-factor cm^2/g
+        double constes = 0.2; // Thomson scattering from free electron pre-factor cm^2/g
+        double fudgeHm = 1.0e2;
+        double constHm = fudgeHm * 7.9e-33 / 0.02; // H^- b-f pre-factor with 1/0.02 factor from Z term cm^2/g        
+
         //should b-b opacity rho-and T- scaling track b-f oapcity?
-        double sigmabf = 1.31e-13;  // Hydrogen b-f x-section, cm^-2
+        double sigmabf = 1.31e-15;  // Hydrogen b-f x-section, cm^-2
         double refLambda = 500.0; //reference lambda in nm for HI bf opacity formula
 
         // Paschen continuum H I opacity from n=3:
@@ -171,6 +186,7 @@ public class Kappas {
         if ((thisTemp > 3000.0) && (thisTemp < 6000.0)
                 && (logE * logRho > -13.0) && (logE * logRho < -8.0)
                 && (massZ > 0.001) && (massZ < 0.03)) {
+           // System.out.println("Hminus branch " + thisTemp);
             // Caroll & Ostlie 2nd Ed. Ch. 9 - (1+X) factors do NOT cancel out when we divide kappa_Star/kappa_Sun
 //            // Cool stars: kappa_bf + kappa_ff + kappa_H^- + kappa_es
             kapFac = rhoT35 * (1.0 + massX) * (constbf * massZ + constff * (1.0 - massZ)) + HmTerm + (1.0 + massX) * constes;
@@ -183,6 +199,7 @@ public class Kappas {
             //        + " H^-: " + logE * logHmTerm + " es: " + logE * Math.log((1.0 + massX) * constes)
             //        + " kapFac " + kapFac);
         } else {
+            //System.out.println("Non Hmin branch " + thisTemp);
             kapFac = rhoT35 * (1.0 + massX) * (constbf * massZ + constff * (1.0 - massZ)) + (1.0 + massX) * constes;
         }
 
@@ -191,16 +208,19 @@ public class Kappas {
         HIbfTerm = Math.exp(logHIbfTerm3) + Math.exp(logHIbfTerm2);
 
         if ((thisTemp >= hotT) && (thisTemp < (hotT + midRange))) {
+          //  System.out.println("mid Range branch " + thisTemp);
             HmHotFac = 1.0 - ((thisTemp - hotT) / midRange);
             HmTermHot = HmTerm * Math.sqrt(HmHotFac);
             //System.out.println("HmHotFac: " + HmHotFac);
             kapFac = rhoT35 * (constbf * massZ + constff * (1.0 - massZ)) + constes + HIbfTerm; // + HmTermHot;
+           // System.out.println("HIbfTerm " + HIbfTerm);
             //System.out.println("Middle T: " + Math.exp(logTemp) + " b-f: " + rhoT35 * (constbf * massZ)
             //        + " f-f: " + rhoT35 * (constff * (1.0 - massZ))
             //        + " es: " + constes + " HIbf: " + HIbfTerm + " HmTermHot: " + HmTermHot + " kapFac " + kapFac);
         }
 
         if (thisTemp >= (hotT + midRange)) {
+          //   System.out.println("hot branch " + thisTemp);
             // Caroll & Ostlie 2nd Ed. Ch. 9 - (1+X) factors in every term will cancel out when we divide kappa_Star/kappa_Sun
             // Hot stars: kappa_bf + kappa_ff + kappa_es
             kapFac = rhoT35 * (constbf * massZ + constff * (1.0 - massZ)) + constes + HIbfTerm;

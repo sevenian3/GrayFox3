@@ -188,32 +188,32 @@ public class Photometry {
             }  //ib band loop
 
             //Make the colors! :-)
-            System.out.println("it: " + it);
+            //System.out.println("it: " + it);
 
             // Ux-Bx: 
             raw = 2.5 * Math.log10(bandIntens[1][it] / bandIntens[0][it]);
             colors[0][it] = raw - vegaColors[0];
-            System.out.println("U-B: " + colors[0][it]);
+            //System.out.println("U-B: " + colors[0][it]);
 
             // B-V:
             raw = 2.5 * Math.log10(bandIntens[3][it] / bandIntens[2][it]);
             colors[1][it] = raw - vegaColors[1];
-            System.out.println("B-V: " + colors[1][it]);
+            //System.out.println("B-V: " + colors[1][it]);
 
             // V-R:
             raw = 2.5 * Math.log10(bandIntens[4][it] / bandIntens[3][it]);
             colors[2][it] = raw - vegaColors[2];
-            System.out.println("V-R: " + colors[2][it]);
+            //System.out.println("V-R: " + colors[2][it]);
 
             // V-I:
             raw = 2.5 * Math.log10(bandIntens[5][it] / bandIntens[3][it]);
             colors[3][it] = raw - vegaColors[3];
-            System.out.println("V-I: " + colors[3][it]);
+            //System.out.println("V-I: " + colors[3][it]);
 
             // R-I:
             raw = 2.5 * Math.log10(bandIntens[5][it] / bandIntens[4][it]);
             colors[4][it] = raw - vegaColors[4];
-            System.out.println("R-I: " + colors[4][it]);
+            //System.out.println("R-I: " + colors[4][it]);
 
         } //theta it loop
 

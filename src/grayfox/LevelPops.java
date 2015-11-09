@@ -137,7 +137,10 @@ public class LevelPops {
 
             // reduce or enhance number density by over-all Rosseland opcity scale parameter
             logNum = logNl + logKScale;
-
+            //if (id == 16) {
+            //    System.out.println("lam0In " + lam0In);
+            //    System.out.println("logNum 1 " + logE*logNum);
+            //}
             // scale numer density by relative depth variation of mass density
             logNum = logNum + rho[1][id] - refLogRho;
 
@@ -145,7 +148,10 @@ public class LevelPops {
             // Normalize wrt to solar Teff so we don't have to evaluate all the other stuff
             //Row 1 of Ne is log_e Ne in cm^-3
             logNe = Ne[1][id];
-
+            //if (id == 16) {
+            //    System.out.println("lam0In " + lam0In);
+            //    System.out.println("logNum 2 " + logE*logNum + " logNe " + logE*logNe + " rho[1][id] " + logE*rho[1][id] + " refLogRho " + logE*refLogRho);
+            //}
             /*
              //
              // ********** Accounting for only TWO ionization stages (I & II):
@@ -192,7 +198,6 @@ public class LevelPops {
                 logNums[0][id] = logNumI - boltzFacGround / temp[0][id] + logGw1;  // ground level of neutral stage
                 logNums[1][id] = logNum + logIonFracII; // Ascribe entire ionized stage pop to its ground level
                 logNums[2][id] = logNumI - boltzFacL / temp[0][id] + logGwL; // lower level of b-b transition
-
                 logNums[3][id] = logNumI - boltzFacU / temp[0][id] + logGwU; // upper level of b-b transition
 
             }
@@ -204,11 +209,15 @@ public class LevelPops {
             //         + Math.exp(logNums[1][id]) + " "
             //          + Math.exp(logNums[2][id]) + " "
             //        + Math.exp(logNums[3][id]));
-            //System.out.println("LevelPops: id, logNums[0][id], logNums[1][id], logNums[2][id], logNums[3][id]: " + id + " "
-            //       + logE * (logNums[0][id]) + " "
-            //        + logE * (logNums[1][id]) + " "
-            //        + logE * (logNums[2][id]) + " "
-            //       + logE * (logNums[3][id]) );
+           // if (id == 16) {
+           //     System.out.println("lam0In " + lam0In);
+           //     System.out.println("LevelPops: id, logNums[0][id], logNums[1][id], logNums[2][id], logNums[3][id], logNums[4][id]: " + id + " "
+            //            + logE * (logNums[0][id]) + " "
+            //            + logE * (logNums[1][id]) + " "
+            //            + logE * (logNums[2][id]) + " "
+             //           + logE * (logNums[3][id]) + " "
+             //           + logE * (logNums[4][id]));
+            //}
             //System.out.println("LevelPops: id, logIonFracI, logIonFracII: " + id + " " + logE*logIonFracI + " " + logE*logIonFracII
             //        + "logNum, logNumI, logNums[0][id], logNums[1][id] "
             //        + logE*logNum + " " + logE*logNumI + " " + logE*logNums[0][id] + " " + logE*logNums[1][id]);
